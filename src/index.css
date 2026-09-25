@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  button, input, select, textarea {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+.font-display {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-sans {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-mono {
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Subtle Animated Ambient Gradients */
+@keyframes hero-gradient-shift {
+  0% {
+    background-position: 0% 40%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+  100% {
+    background-position: 0% 40%;
+  }
+}
+
+@keyframes aura-drift-1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.28;
+  }
+  33% {
+    transform: translate(45px, -25px) scale(1.15);
+    opacity: 0.42;
+  }
+  66% {
+    transform: translate(-30px, 20px) scale(0.92);
+    opacity: 0.30;
+  }
+}
+
+@keyframes aura-drift-2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.22;
+  }
+  50% {
+    transform: translate(-40px, -30px) scale(1.22);
+    opacity: 0.38;
+  }
+}
+
+@keyframes aura-focus-cta {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.65;
+  }
+}
+
+@keyframes magnetic-cta-glow {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(20, 184, 166, 0.35), 0 0 35px rgba(6, 182, 212, 0.2);
+  }
+  50% {
+    box-shadow: 0 6px 30px rgba(20, 184, 166, 0.6), 0 0 55px rgba(6, 182, 212, 0.38);
+  }
+}
+
+.animate-hero-gradient {
+  background-size: 220% 220%;
+  animation: hero-gradient-shift 16s ease-in-out infinite;
+}
+
+.animate-aura-1 {
+  animation: aura-drift-1 12s ease-in-out infinite;
+}
+
+.animate-aura-2 {
+  animation: aura-drift-2 15s ease-in-out infinite;
+}
+
+.animate-aura-cta {
+  animation: aura-focus-cta 4s ease-in-out infinite;
+}
+
+.animate-cta-magnetic {
+  animation: magnetic-cta-glow 3.5s ease-in-out infinite;
+}

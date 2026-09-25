@@ -1,0 +1,6 @@
+{
+  "name": "BCAD | Advanced Defensive Cybersecurity Training | BlackPerl DFIR",
+  "description": "BCAD by BlackPerl DFIR is a live, hands-on advanced defensive cybersecurity program covering SOC operations, detection engineering, threat hunting, DFIR and incident response.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

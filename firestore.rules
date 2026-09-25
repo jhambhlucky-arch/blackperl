@@ -1,0 +1,100 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Admins collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && request.auth.uid == adminId;
+      allow write: if false;
+    }
+
+    // Validation for Advisory Inquiries
+    function isValidAdvisoryInquiry(data) {
+      return data.keys().hasAll(['fullName', 'email', 'phone', 'preferredDate', 'preferredTime', 'journeyStage', 'focusArea', 'createdAt', 'status'])
+        && data.keys().hasOnly(['fullName', 'email', 'phone', 'preferredDate', 'preferredTime', 'journeyStage', 'focusArea', 'createdAt', 'status'])
+        && data.fullName is string && data.fullName.size() >= 2 && data.fullName.size() <= 100
+        && data.email is string && data.email.size() >= 5 && data.email.size() <= 120
+        && data.phone is string && data.phone.size() >= 5 && data.phone.size() <= 40
+        && data.preferredDate is string && data.preferredDate.size() <= 30
+        && data.preferredTime is string && data.preferredTime.size() <= 30
+        && data.journeyStage is string && data.journeyStage.size() <= 100
+        && data.focusArea is string && data.focusArea.size() <= 100
+        && data.status in ['pending', 'confirmed', 'completed']
+        && data.createdAt == request.time;
+    }
+
+    match /advisory_inquiries/{inquiryId} {
+      allow create: if isValidId(inquiryId) && isValidAdvisoryInquiry(incoming()) && incoming().status == 'pending';
+      allow get, list, update, delete: if isAdmin();
+    }
+
+    // Validation for Corporate Training Inquiries
+    function isValidCorporateInquiry(data) {
+      return data.keys().hasAll(['companyName', 'contactName', 'workEmail', 'phone', 'teamSize', 'createdAt', 'status'])
+        && data.keys().hasOnly(['companyName', 'contactName', 'workEmail', 'phone', 'teamSize', 'primaryNeed', 'createdAt', 'status'])
+        && data.companyName is string && data.companyName.size() >= 2 && data.companyName.size() <= 120
+        && data.contactName is string && data.contactName.size() >= 2 && data.contactName.size() <= 100
+        && data.workEmail is string && data.workEmail.size() >= 5 && data.workEmail.size() <= 120
+        && data.phone is string && data.phone.size() >= 5 && data.phone.size() <= 40
+        && data.teamSize is string && data.teamSize.size() <= 60
+        && (!('primaryNeed' in data) || (data.primaryNeed is string && data.primaryNeed.size() <= 300))
+        && data.status in ['pending', 'in_review', 'contacted']
+        && data.createdAt == request.time;
+    }
+
+    match /corporate_inquiries/{inquiryId} {
+      allow create: if isValidId(inquiryId) && isValidCorporateInquiry(incoming()) && incoming().status == 'pending';
+      allow get, list, update, delete: if isAdmin();
+    }
+
+    // Validation for User Lab State
+    function isValidUserLab(data) {
+      return data.keys().hasAll(['userId', 'updatedAt'])
+        && data.keys().hasOnly(['userId', 'activeScenarioId', 'completedSteps', 'sigmaDraft', 'bookmarkedModules', 'updatedAt'])
+        && data.userId is string && data.userId.size() <= 128
+        && (!('activeScenarioId' in data) || (data.activeScenarioId is string && data.activeScenarioId.size() <= 64))
+        && (!('completedSteps' in data) || (data.completedSteps is string && data.completedSteps.size() <= 500))
+        && (!('sigmaDraft' in data) || (data.sigmaDraft is string && data.sigmaDraft.size() <= 3000))
+        && (!('bookmarkedModules' in data) || (data.bookmarkedModules is string && data.bookmarkedModules.size() <= 500))
+        && data.updatedAt == request.time;
+    }
+
+    match /user_labs/{userId} {
+      allow get: if isSignedIn() && request.auth.uid == userId && isValidId(userId);
+      allow create: if isSignedIn() && request.auth.uid == userId && isValidId(userId)
+        && isValidUserLab(incoming()) && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() && request.auth.uid == userId && isValidId(userId)
+        && isValidUserLab(incoming()) && incoming().userId == request.auth.uid
+        && incoming().userId == existing().userId;
+      allow delete: if isSignedIn() && request.auth.uid == userId && isValidId(userId);
+      allow list: if false;
+    }
+  }
+}

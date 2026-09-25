@@ -1,0 +1,154 @@
+{
+  "entities": {
+    "AdvisoryInquiry": {
+      "title": "Advisory Inquiry",
+      "description": "Advisory and consultation booking inquiries submitted by prospective students or SOC practitioners",
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "description": "Full name of prospective student",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of inquirer",
+          "maxLength": 120
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone or WhatsApp contact number",
+          "maxLength": 40
+        },
+        "preferredDate": {
+          "type": "string",
+          "description": "Requested consultation date",
+          "maxLength": 30
+        },
+        "preferredTime": {
+          "type": "string",
+          "description": "Requested consultation time slot",
+          "maxLength": 30
+        },
+        "journeyStage": {
+          "type": "string",
+          "description": "Current background or experience level in cybersecurity",
+          "maxLength": 100
+        },
+        "focusArea": {
+          "type": "string",
+          "description": "Primary defensive domain of interest",
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Server timestamp of submission"
+        },
+        "status": {
+          "type": "string",
+          "description": "Review status of consultation",
+          "enum": ["pending", "confirmed", "completed"]
+        }
+      },
+      "required": ["fullName", "email", "phone", "preferredDate", "preferredTime", "journeyStage", "focusArea", "createdAt", "status"]
+    },
+    "CorporateInquiry": {
+      "title": "Corporate Training Inquiry",
+      "description": "Corporate enterprise team training inquiries and RFPs",
+      "type": "object",
+      "properties": {
+        "companyName": {
+          "type": "string",
+          "description": "Enterprise organization or team name",
+          "maxLength": 120
+        },
+        "contactName": {
+          "type": "string",
+          "description": "Full name of corporate training lead or manager",
+          "maxLength": 100
+        },
+        "workEmail": {
+          "type": "string",
+          "description": "Business email address",
+          "maxLength": 120
+        },
+        "phone": {
+          "type": "string",
+          "description": "Business contact phone number",
+          "maxLength": 40
+        },
+        "teamSize": {
+          "type": "string",
+          "description": "Estimated cohort or team size",
+          "maxLength": 60
+        },
+        "primaryNeed": {
+          "type": "string",
+          "description": "Key training objectives and focus modules",
+          "maxLength": 300
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Server timestamp of submission"
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of enterprise inquiry",
+          "enum": ["pending", "in_review", "contacted"]
+        }
+      },
+      "required": ["companyName", "contactName", "workEmail", "phone", "teamSize", "createdAt", "status"]
+    },
+    "UserLabState": {
+      "title": "User Lab State",
+      "description": "Interactive cybersecurity threat sandbox progress and bookmarked modules per user",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the analyst",
+          "maxLength": 128
+        },
+        "activeScenarioId": {
+          "type": "string",
+          "description": "ID of current threat hunting scenario",
+          "maxLength": 64
+        },
+        "completedSteps": {
+          "type": "string",
+          "description": "Comma-separated or serialized completed step IDs",
+          "maxLength": 500
+        },
+        "sigmaDraft": {
+          "type": "string",
+          "description": "Saved draft detection Sigma rule in sandbox",
+          "maxLength": 3000
+        },
+        "bookmarkedModules": {
+          "type": "string",
+          "description": "Comma-separated bookmarked curriculum module IDs",
+          "maxLength": 500
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of last lab activity"
+        }
+      },
+      "required": ["userId", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/advisory_inquiries/{inquiryId}": {
+      "schema": "AdvisoryInquiry",
+      "description": "Incoming advisory and consultation requests submitted from the contact page"
+    },
+    "/corporate_inquiries/{inquiryId}": {
+      "schema": "CorporateInquiry",
+      "description": "Incoming enterprise team training requests from corporate training page"
+    },
+    "/user_labs/{userId}": {
+      "schema": "UserLabState",
+      "description": "Personal threat hunting sandbox progress and bookmarked modules saved by signed-in users"
+    }
+  }
+}
