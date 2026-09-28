@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { ArrowLeft, Shield, CheckCircle2, Lock, FileText, Mail, Phone, MessageSquare } from 'lucide-react';
+import { applySEO } from '../utils/seo';
 
 interface LegalPageProps {
   type: 'privacy' | 'terms';
@@ -10,14 +11,7 @@ export const LegalPage: React.FC<LegalPageProps> = ({ type, onNavigate }) => {
   const isPrivacy = type === 'privacy';
 
   useEffect(() => {
-    document.title = isPrivacy ? "Privacy Policy | BlackPerl DFIR" : "Terms & Conditions | BlackPerl DFIR";
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", isPrivacy 
-        ? "Privacy Policy for BlackPerl DFIR - BCAD training program admissions and interactive simulation telemetry." 
-        : "Terms & Conditions for BlackPerl DFIR - BCAD website use and interactive defensive range simulation."
-      );
-    }
+    applySEO(isPrivacy ? '/privacy-policy' : '/terms-and-conditions');
     window.scrollTo(0, 0);
   }, [isPrivacy]);
 

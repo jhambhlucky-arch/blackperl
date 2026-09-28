@@ -83,6 +83,7 @@ import { ProgramPage } from './pages/ProgramPage';
 import { CorporateTrainingPage } from './pages/CorporateTrainingPage';
 import { ContactPage } from './pages/ContactPage';
 import { LegalPage } from './pages/LegalPage';
+import { applySEO } from './utils/seo';
 
 // Primary 5 verified organizations trained by BlackPerl (Section 1)
 const PRIMARY_TRAINED_ORGANIZATIONS = [
@@ -147,6 +148,10 @@ export default function App() {
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
+
+  useEffect(() => {
+    applySEO(currentPath);
+  }, [currentPath]);
 
   const navigate = (path: string) => {
     if (path.startsWith('/#')) {

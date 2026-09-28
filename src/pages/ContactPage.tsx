@@ -13,6 +13,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { db, doc, setDoc, serverTimestamp, handleFirestoreError, OperationType } from '../firebase';
+import { applySEO } from '../utils/seo';
 
 interface ContactPageProps {
   onNavigate: (path: string) => void;
@@ -31,11 +32,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "Contact BCAD | Talk to a Cybersecurity Training Advisor";
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", "Speak with a BCAD advisor about advanced defensive cybersecurity training, SOC, threat hunting, detection engineering, DFIR and incident response.");
-    }
+    applySEO('/contact');
     window.scrollTo(0, 0);
   }, []);
 

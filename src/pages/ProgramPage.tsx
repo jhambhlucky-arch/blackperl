@@ -20,6 +20,7 @@ import {
   Code
 } from 'lucide-react';
 import { MODULES, TOOL_CATEGORIES } from '../data/curriculumData';
+import { applySEO } from '../utils/seo';
 
 interface ProgramPageProps {
   onNavigate: (path: string) => void;
@@ -27,11 +28,7 @@ interface ProgramPageProps {
 
 export const ProgramPage: React.FC<ProgramPageProps> = ({ onNavigate }) => {
   useEffect(() => {
-    document.title = "BCAD Program | SOC, Threat Hunting, DFIR & Detection Engineering";
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", "Explore the BCAD program from BlackPerl DFIR, including SOC operations, detection engineering, threat hunting, DFIR, incident response, practical labs and assessment.");
-    }
+    applySEO('/program');
     window.scrollTo(0, 0);
   }, []);
 

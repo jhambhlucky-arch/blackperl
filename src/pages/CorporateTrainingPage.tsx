@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { PARTNERS } from '../data/curriculumData';
 import { db, doc, setDoc, serverTimestamp, handleFirestoreError, OperationType } from '../firebase';
+import { applySEO } from '../utils/seo';
 
 interface CorporateTrainingPageProps {
   onNavigate: (path: string) => void;
@@ -31,11 +32,7 @@ export const CorporateTrainingPage: React.FC<CorporateTrainingPageProps> = ({ on
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "Cybersecurity Team Training | SOC, Threat Hunting & DFIR | BlackPerl";
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", "BlackPerl DFIR provides cybersecurity team training across SOC operations, detection engineering, threat hunting, DFIR and incident response. Talk to our team.");
-    }
+    applySEO('/corporate-training');
     window.scrollTo(0, 0);
   }, []);
 
