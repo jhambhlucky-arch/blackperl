@@ -171,6 +171,7 @@ export default function App() {
   const [testimonialIndex, setTestimonialIndex] = useState<number>(0);
 
   // Firebase Auth & Cloud Sync State
+  const SHOW_ANALYST_LOGIN = false; // Hidden for now per user request
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [authLoading, setAuthLoading] = useState<boolean>(true);
   const [cloudSynced, setCloudSynced] = useState<boolean>(false);
@@ -372,33 +373,35 @@ export default function App() {
 
           {/* ZONE 3: PRIMARY ACTION */}
           <div className="flex items-center gap-3">
-            {user ? (
-              <div className="flex items-center gap-2 bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1.5">
-                {user.photoURL ? (
-                  <img src={user.photoURL} alt={user.displayName || 'Analyst'} className="w-5 h-5 rounded-full object-cover" />
-                ) : (
-                  <User className="w-4 h-4 text-teal-400" />
-                )}
-                <span className="text-xs font-mono text-slate-300 max-w-[90px] truncate hidden sm:inline">
-                  {user.displayName?.split(' ')[0] || user.email?.split('@')[0]}
-                </span>
+            {SHOW_ANALYST_LOGIN && (
+              user ? (
+                <div className="flex items-center gap-2 bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1.5">
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt={user.displayName || 'Analyst'} className="w-5 h-5 rounded-full object-cover" />
+                  ) : (
+                    <User className="w-4 h-4 text-teal-400" />
+                  )}
+                  <span className="text-xs font-mono text-slate-300 max-w-[90px] truncate hidden sm:inline">
+                    {user.displayName?.split(' ')[0] || user.email?.split('@')[0]}
+                  </span>
+                  <button
+                    onClick={handleSignOut}
+                    title="Sign Out"
+                    className="text-slate-400 hover:text-rose-400 transition-colors ml-1 cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ) : (
                 <button
-                  onClick={handleSignOut}
-                  title="Sign Out"
-                  className="text-slate-400 hover:text-rose-400 transition-colors ml-1 cursor-pointer"
+                  onClick={handleSignIn}
+                  disabled={authLoading}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans font-medium text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800 border border-slate-700/80 rounded-lg transition-all cursor-pointer"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogIn className="w-3.5 h-3.5 text-teal-400" />
+                  <span>Analyst Login</span>
                 </button>
-              </div>
-            ) : (
-              <button
-                onClick={handleSignIn}
-                disabled={authLoading}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans font-medium text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800 border border-slate-700/80 rounded-lg transition-all cursor-pointer"
-              >
-                <LogIn className="w-3.5 h-3.5 text-teal-400" />
-                <span>Analyst Login</span>
-              </button>
+              )
             )}
 
             <button 
@@ -1145,22 +1148,29 @@ export default function App() {
                         <div className="flex flex-wrap justify-between items-center gap-3 pt-2">
                           <div className="flex items-center gap-2">
                             <span className="text-xs text-teal-400 font-mono">Completed BCAD Threat Journey</span>
-                            {user ? (
-                              <button
-                                onClick={syncLabStateToCloud}
-                                className="px-3 py-1.5 bg-slate-900 border border-teal-500/40 hover:border-teal-400 text-teal-300 text-xs font-mono rounded-md flex items-center gap-1.5 transition-all cursor-pointer"
-                              >
-                                <Cloud className="w-3.5 h-3.5" />
-                                {cloudSynced ? 'Progress Saved to Cloud ✓' : 'Save to Cloud Profile'}
-                              </button>
+                            {SHOW_ANALYST_LOGIN ? (
+                              user ? (
+                                <button
+                                  onClick={syncLabStateToCloud}
+                                  className="px-3 py-1.5 bg-slate-900 border border-teal-500/40 hover:border-teal-400 text-teal-300 text-xs font-mono rounded-md flex items-center gap-1.5 transition-all cursor-pointer"
+                                >
+                                  <Cloud className="w-3.5 h-3.5" />
+                                  {cloudSynced ? 'Progress Saved to Cloud ✓' : 'Save to Cloud Profile'}
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={handleSignIn}
+                                  className="px-3 py-1.5 bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-300 text-xs font-mono rounded-md flex items-center gap-1.5 transition-all cursor-pointer"
+                                >
+                                  <LogIn className="w-3.5 h-3.5 text-teal-400" />
+                                  <span>Sign In to Save Completion</span>
+                                </button>
+                              )
                             ) : (
-                              <button
-                                onClick={handleSignIn}
-                                className="px-3 py-1.5 bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-300 text-xs font-mono rounded-md flex items-center gap-1.5 transition-all cursor-pointer"
-                              >
-                                <LogIn className="w-3.5 h-3.5 text-teal-400" />
-                                <span>Sign In to Save Completion</span>
-                              </button>
+                              <span className="px-2.5 py-1 bg-teal-950/70 border border-teal-500/40 text-teal-300 text-xs font-mono rounded-md flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+                                Rule Validated & Active
+                              </span>
                             )}
                           </div>
                           <a
