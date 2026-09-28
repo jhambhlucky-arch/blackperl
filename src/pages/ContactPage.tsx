@@ -335,9 +335,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                 {/* Direct Action Buttons */}
                 <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-200">
                   <a
-                    href="https://wa.me/9972641801"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="tel:+919972641801"
                     className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-sans font-semibold rounded-xl transition-all shadow-sm cursor-pointer"
                   >
                     <Phone className="w-3.5 h-3.5 text-teal-400" />
@@ -345,7 +343,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
                   </a>
 
                   <a
-                    href="https://wa.me/9972641801"
+                    href="https://wa.me/919972641801"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-sans font-semibold rounded-xl transition-all shadow-sm cursor-pointer"

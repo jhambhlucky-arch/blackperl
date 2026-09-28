@@ -1914,9 +1914,7 @@ export default function App() {
 
                 <div className="flex flex-wrap items-center gap-2 pt-1">
                   <a
-                    href="https://wa.me/9972641801"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="tel:+919972641801"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-sans font-semibold rounded-lg transition-all cursor-pointer"
                   >
                     <Phone className="w-3 h-3 text-teal-400" />
@@ -1924,7 +1922,7 @@ export default function App() {
                   </a>
 
                   <a
-                    href="https://wa.me/9972641801"
+                    href="https://wa.me/919972641801"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 hover:bg-teal-400 text-slate-950 text-[11px] font-sans font-semibold rounded-lg transition-all cursor-pointer"
