@@ -298,7 +298,11 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
             {/* ADMISSIONS & MARKETING OFFICE */}
             <div className="border-t border-slate-200/80 pt-10 space-y-6">
               <div className="flex items-center gap-3">
-                <img src="/logo.svg" alt="BlackPerl" className="w-8 h-8 object-contain shrink-0" />
+                <img 
+                  src="/logo.svg" 
+                  alt="BlackPerl DFIR" 
+                  className="h-8 w-auto object-contain shrink-0" 
+                />
                 <div>
                   <span className="text-xs font-mono text-teal-700 uppercase tracking-widest font-bold block">DIRECT CONTACT</span>
                   <h2 className="font-display text-2xl md:text-3xl font-bold text-[#020617] tracking-tight">

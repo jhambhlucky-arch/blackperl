@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Shield,
   Terminal,
@@ -40,7 +40,10 @@ import {
   LogIn,
   LogOut,
   Cloud,
-  MessageSquare
+  MessageSquare,
+  Share2,
+  Download,
+  Sparkles
 } from 'lucide-react';
 
 import {
@@ -80,6 +83,55 @@ import { ProgramPage } from './pages/ProgramPage';
 import { CorporateTrainingPage } from './pages/CorporateTrainingPage';
 import { ContactPage } from './pages/ContactPage';
 import { LegalPage } from './pages/LegalPage';
+
+// Primary 5 verified organizations trained by BlackPerl (Section 1)
+const PRIMARY_TRAINED_ORGANIZATIONS = [
+  {
+    name: 'DRDO',
+    logo: '/logos/drdo.svg',
+    heightClass: 'h-10 md:h-11'
+  },
+  {
+    name: 'Indian Army',
+    logo: '/logos/indian-army.svg',
+    heightClass: 'h-10 md:h-11'
+  },
+  {
+    name: 'Airbus',
+    logo: '/logos/airbus.svg',
+    heightClass: 'h-5 md:h-6'
+  },
+  {
+    name: 'Nutanix',
+    logo: '/logos/nutanix.svg',
+    heightClass: 'h-5 md:h-6'
+  },
+  {
+    name: 'Cyderes',
+    logo: '/logos/cyderes.svg',
+    heightClass: 'h-4 md:h-5'
+  }
+];
+
+// 10 verified corporate training organizations (Section 2)
+interface CorporateOrg {
+  name: string;
+  logo?: string;
+  heightClass?: string;
+}
+
+const CORPORATE_ORGANIZATIONS: CorporateOrg[] = [
+  { name: 'Creative ITC' },
+  { name: 'HR Path', logo: '/logos/hr-path.svg', heightClass: 'h-6 md:h-7' },
+  { name: 'Stickman Cyber', logo: '/logos/stickman-cyber.png', heightClass: 'h-6 md:h-7' },
+  { name: 'Blackbox', logo: '/logos/blackbox.png', heightClass: 'h-4 md:h-5 brightness-0 invert opacity-90 hover:opacity-100 transition-opacity' },
+  { name: 'Bajaj Fincorp' },
+  { name: 'NuSummit Cybersecurity' },
+  { name: 'Tridots Tech' },
+  { name: 'Shieldient', logo: '/logos/shieldient.png', heightClass: 'h-5 md:h-6' },
+  { name: 'Cyber Threat Management' },
+  { name: 'Cloud4c', logo: '/logos/cloud4c.svg', heightClass: 'h-6 md:h-7 brightness-0 invert opacity-90 hover:opacity-100 transition-opacity' }
+];
 
 export default function App() {
   // Client Path Routing
@@ -138,7 +190,8 @@ export default function App() {
   // Sandbox Game State
   const [sandboxPhase, setSandboxPhase] = useState<'SIGNAL' | 'INVESTIGATION' | 'UNDERSTANDING' | 'HUNT' | 'ENGINEER' | 'RESPOND'>('SIGNAL');
   const [sandboxAnswer, setSandboxAnswer] = useState<string | null>(null);
-  const [huntQuery, setHuntQuery] = useState<string>('');
+  const DEFAULT_HUNT_QUERY = "DeviceNetworkEvents | where RemoteIP == '103.45.12.89' | project DeviceName, LocalIP, RemoteIP";
+  const [huntQuery, setHuntQuery] = useState<string>(DEFAULT_HUNT_QUERY);
   const [huntResults, setHuntResults] = useState<{ hostname: string; ip: string; count: number }[] | null>(null);
   const [huntLoading, setHuntLoading] = useState<boolean>(false);
   
@@ -149,6 +202,18 @@ export default function App() {
 
   // Response Sandbox State
   const [containState, setContainState] = useState<'IDLE' | 'CONTAINING' | 'SUCCESS'>('IDLE');
+
+  // Defender Readiness Snapshot state
+  const [snapshotName, setSnapshotName] = useState<string>('');
+  const [snapshotEmail, setSnapshotEmail] = useState<string>('');
+  const [snapshotPhone, setSnapshotPhone] = useState<string>('');
+  const [snapshotConsent, setSnapshotConsent] = useState<boolean>(false);
+  const [snapshotSubmitted, setSnapshotSubmitted] = useState<boolean>(false);
+  const [snapshotLoading, setSnapshotLoading] = useState<boolean>(false);
+  const [snapshotError, setSnapshotError] = useState<string | null>(null);
+  const [snapshotRefId] = useState<string>(() => `BCAD-SNAP-${Math.random().toString(36).substring(2, 7).toUpperCase()}`);
+  const [snapshotCopied, setSnapshotCopied] = useState<boolean>(false);
+  const [snapshotDownloaded, setSnapshotDownloaded] = useState<boolean>(false);
 
   // Lab Preview Interactive Terminal State
   const [labTab, setLabTab] = useState<'logs' | 'sigma' | 'alert'>('logs');
@@ -170,6 +235,46 @@ export default function App() {
 
   // Testimonial index
   const [testimonialIndex, setTestimonialIndex] = useState<number>(0);
+
+  // One-time subtle scroll reveal for Section 1 (Early Credibility)
+  const trustRef = useRef<HTMLDivElement>(null);
+  const [trustVisible, setTrustVisible] = useState(false);
+  useEffect(() => {
+    const el = trustRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setTrustVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setTrustVisible(true);
+        observer.unobserve(entry.target);
+      }
+    }, { threshold: 0.15 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // One-time subtle scroll reveal for Section 2 (Corporate Training Proposition)
+  const corpRef = useRef<HTMLDivElement>(null);
+  const [corpVisible, setCorpVisible] = useState(false);
+  useEffect(() => {
+    const el = corpRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setCorpVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setCorpVisible(true);
+        observer.unobserve(entry.target);
+      }
+    }, { threshold: 0.15 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Firebase Auth & Cloud Sync State
   const SHOW_ANALYST_LOGIN = false; // Hidden for now per user request
@@ -283,18 +388,20 @@ export default function App() {
   };
 
   const executeHunt = () => {
-    if (!huntQuery.toLowerCase().includes('103.45.12.89')) {
-      alert('Your query is missing the critical Indicator of Compromise (C2 IP: 103.45.12.89). Ensure you scan for the correct adversary IP!');
-      return;
-    }
+    const validQuery = (huntQuery && huntQuery.toLowerCase().includes('103.45.12.89'))
+      ? huntQuery
+      : DEFAULT_HUNT_QUERY;
+    
+    setHuntQuery(validQuery);
     setHuntLoading(true);
+    setHuntResults([
+      { hostname: 'WS-DEV-04.BLACKPERL.INTERNAL', ip: '10.10.42.14', count: 4 },
+      { hostname: 'WS-HR-09.BLACKPERL.INTERNAL', ip: '10.10.88.91', count: 12 }
+    ]);
     setTimeout(() => {
-      setHuntResults([
-        { hostname: 'WS-DEV-04.BLACKPERL.INTERNAL', ip: '10.10.42.14', count: 4 },
-        { hostname: 'WS-HR-09.BLACKPERL.INTERNAL', ip: '10.10.88.91', count: 12 }
-      ]);
       setHuntLoading(false);
-    }, 1200);
+      setSandboxPhase('ENGINEER');
+    }, 600);
   };
 
   const triggerContainment = () => {
@@ -307,11 +414,170 @@ export default function App() {
   const resetSandbox = () => {
     setSandboxPhase('SIGNAL');
     setSandboxAnswer(null);
-    setHuntQuery('');
+    setHuntQuery(DEFAULT_HUNT_QUERY);
     setHuntResults(null);
     setSigmaImage('powershell.exe');
     setSigmaCommand('DownloadString');
     setContainState('IDLE');
+    setSnapshotSubmitted(false);
+    setSnapshotLoading(false);
+    setSnapshotError(null);
+    setSnapshotCopied(false);
+    setSnapshotDownloaded(false);
+  };
+
+  const handleSnapshotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSnapshotError(null);
+
+    if (!snapshotName.trim() || !snapshotEmail.trim() || !snapshotPhone.trim()) {
+      setSnapshotError('Please complete all required fields.');
+      return;
+    }
+    if (!snapshotConsent) {
+      setSnapshotError('Please accept the consent checkbox to view your snapshot.');
+      return;
+    }
+
+    setSnapshotLoading(true);
+
+    try {
+      // Record lead in Firestore if available
+      const leadId = `snap_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      await setDoc(doc(db, 'range_leads', leadId), {
+        fullName: snapshotName.trim(),
+        email: snapshotEmail.trim(),
+        phone: snapshotPhone.trim(),
+        referenceId: snapshotRefId,
+        stagesCompleted: 6,
+        huntQuery: huntQuery,
+        sigmaImage: sigmaImage,
+        sigmaCommand: sigmaCommand,
+        containedHosts: ['WS-DEV-04', 'WS-HR-09'],
+        createdAt: serverTimestamp(),
+        source: 'interactive_range_snapshot'
+      });
+    } catch {
+      // Non-blocking fallback: proceed with local snapshot reveal even if db fails
+    } finally {
+      setSnapshotLoading(false);
+      setSnapshotSubmitted(true);
+    }
+  };
+
+  const handleShareSnapshot = async () => {
+    const shareText = `[BlackPerl DFIR - BCAD Defender Readiness Snapshot]
+Reference: ${snapshotRefId}
+Status: Threat Incident Successfully Contained
+Stages Completed: 6/6 (Signal, Investigation, Lineage, Threat Hunt, Sigma Rule Engineering, Incident Containment)
+Simulation: BCAD Advanced Defensive Cybersecurity Range (Indicative Learning Simulation)
+Explore BCAD: ${window.location.origin}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'BCAD Defender Readiness Snapshot',
+          text: shareText,
+          url: window.location.origin,
+        });
+        return;
+      } catch {
+        // Fallback to clipboard
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setSnapshotCopied(true);
+      setTimeout(() => setSnapshotCopied(false), 3000);
+    } catch {
+      // Ignore clipboard fallback error
+    }
+  };
+
+  const handleDownloadSnapshot = () => {
+    const reportText = `=====================================================
+BLACKPERL DFIR · BCAD DEFENDER READINESS SNAPSHOT
+=====================================================
+Reference ID: ${snapshotRefId}
+Generated At: ${new Date().toISOString()}
+Session Mode: BCAD Interactive Threat Range Simulation
+Status: Threat Incident Successfully Resolved
+
+COMPLETED CHALLENGE STAGES (6/6):
+1. Signal Triaging (MITRE T1053.005)
+   - Identified scheduled task persistence anomaly on DC01.BLACKPERL.INTERNAL.
+2. Alert Investigation (Event ID 4688)
+   - Analyzed suspicious command-line execution and obfuscated PowerShell arguments.
+3. Process Execution Lineage (MITRE T1059)
+   - Traced process execution ancestor tree (explorer.exe -> cmd.exe -> schtasks.exe).
+4. Telemetry Threat Hunting (KQL Query)
+   - Formulated query: "${huntQuery}"
+   - Identified compromised endpoints: WS-DEV-04 (10.10.42.14) & WS-HR-09 (10.10.88.91).
+5. Detection Engineering (Sigma Rules)
+   - Codified detection logic for Image: "${sigmaImage}" & Command Pattern: "${sigmaCommand}".
+6. Active Incident Containment & Response
+   - Executed host isolation on active C2 beacons and revoked Active Directory credential hashes.
+
+DEMONSTRATED CAPABILITIES:
+- Threat Signal Triaging & MITRE ATT&CK Mapping
+- Security Log Forensic Auditing
+- Process Lineage Reconstruction
+- Enterprise Telemetry Threat Hunting (KQL)
+- SIEM-Agnostic Detection Engineering (Sigma)
+- Rapid Incident Containment & Network Isolation
+
+PERFORMANCE INTERPRETATION:
+You systematically navigated the full incident lifecycle—from initial anomaly recognition through log analysis, process lineage tracing, telemetry hunting, custom detection authoring, and endpoint containment. This confirms practical familiarity with core defensive cyber operations workflows.
+
+DISCLAIMER:
+This is an indicative learning snapshot from the BCAD interactive simulation, not a certification, accredited qualification, or formal assessment.
+
+=====================================================
+BlackPerl DFIR — The Cyberdefenders Online
+Admissions & Marketing: +91 99726 41801 | Jhambhlucky@gmail.com
+=====================================================`;
+
+    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `BCAD_Readiness_Snapshot_${snapshotRefId}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setSnapshotDownloaded(true);
+    setTimeout(() => setSnapshotDownloaded(false), 3000);
+  };
+
+  const handleEmailSnapshot = () => {
+    const subject = encodeURIComponent('BCAD Defender Readiness Snapshot');
+    const body = encodeURIComponent(
+`BCAD Defender Readiness Snapshot
+Reference ID: ${snapshotRefId}
+Status: Threat Incident Successfully Contained
+
+Completed Challenge Stages (6/6):
+1. Signal Triaging (MITRE T1053.005) - DC01 Anomaly
+2. Alert Investigation (Event ID 4688) - CommandLine Forensics
+3. Process Execution Lineage (MITRE T1059) - Ancestry Hierarchy
+4. Telemetry Threat Hunting (KQL Query) - Compromised Endpoints
+5. Detection Engineering (Sigma Rule) - Automated Detection Logic
+6. Incident Containment & Response - Endpoint Isolation & AD Credential Revocation
+
+Demonstrated Capabilities:
+- Threat Signal Triaging & MITRE ATT&CK Mapping
+- Security Audit Log Forensics
+- Process Lineage Reconstruction
+- Enterprise Telemetry Threat Hunting (KQL)
+- SIEM-Agnostic Sigma Detection Authoring
+- Active Incident Containment
+
+Indicative Learning Snapshot from BlackPerl DFIR - BCAD Interactive Threat Range.
+Explore BCAD: ${window.location.origin}`
+    );
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   // Filter tools logic
@@ -330,10 +596,17 @@ export default function App() {
           
           {/* ZONE 1: BRAND ZONE */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
-            <img src="/logo.svg" alt="BlackPerl" className="w-10 h-10 object-contain shrink-0" />
+            <img 
+              src="/logo.svg" 
+              alt="BlackPerl DFIR" 
+              className="h-10 w-auto object-contain shrink-0" 
+            />
             <div className="flex flex-col">
               <span className="font-display text-xl font-extrabold tracking-tight text-white group-hover:text-teal-300 transition-colors">
                 BlackPerl DFIR
+              </span>
+              <span className="text-[9px] font-mono tracking-widest text-teal-400 uppercase leading-none mt-1">
+                CYBER SECURITY · FORENSICS · RESILIENCE
               </span>
               <span className="text-[10px] font-sans tracking-wide text-[#F4F6FB] font-medium leading-tight mt-0.5">
                 The Cyberdefenders Online
@@ -587,40 +860,57 @@ export default function App() {
             </div>
           </section>
 
-      {/* TRUST STRIP & CERTIFICATION INFO */}
-      <section className="bg-slate-950 border-y border-slate-900/80 py-8 relative">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* SECTION 1: EARLY TRAINING CREDIBILITY */}
+      <section className="bg-slate-950 border-y border-slate-900/80 py-10 relative">
+        <div className="max-w-7xl mx-auto px-6" ref={trustRef}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            {/* Logos Strip */}
-            <div className="lg:col-span-8">
-              <span className="text-[10px] font-mono tracking-widest text-slate-500 uppercase block mb-4 font-semibold">
-                TRUSTED BY PROFESSIONALS FROM
-              </span>
-              <div className="flex flex-wrap items-center gap-x-10 gap-y-6">
-                {PARTNERS.map(partner => (
-                  <div key={partner.name} className="flex flex-col group">
-                    <span className="font-display text-slate-300 font-bold tracking-tight text-sm md:text-base group-hover:text-teal-400 transition-colors">
-                      {partner.name}
-                    </span>
-                    <span className="text-[9px] font-mono text-slate-600 uppercase mt-0.5">
-                      {partner.desc}
-                    </span>
+            {/* Selected Organizations Trained by BlackPerl */}
+            <div className="lg:col-span-8 space-y-4">
+              <div>
+                <h3 className="font-display text-base md:text-lg font-bold text-white tracking-tight">
+                  Selected Organizations Trained by BlackPerl
+                </h3>
+                <p className="font-sans text-xs md:text-sm text-slate-400 mt-1">
+                  Training experience across defence, enterprise and cybersecurity environments.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-x-10 md:gap-x-12 gap-y-6 pt-3">
+                {PRIMARY_TRAINED_ORGANIZATIONS.map((org, idx) => (
+                  <div 
+                    key={org.name}
+                    title={org.name}
+                    style={{ transitionDelay: `${idx * 80}ms` }}
+                    className={`transition-all duration-700 ease-out flex items-center ${
+                      trustVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                    }`}
+                  >
+                    <img 
+                      src={org.logo} 
+                      alt={org.name} 
+                      className={`${org.heightClass} w-auto object-contain transition-opacity duration-200 opacity-90 hover:opacity-100`} 
+                    />
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Certification Badge */}
-            <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-slate-900 pt-6 lg:pt-0 lg:pl-8 flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-teal-950/30 border border-teal-500/20 text-teal-400 shrink-0">
-                <Award className="w-8 h-8" />
+            <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-slate-900 pt-6 lg:pt-0 lg:pl-8 flex flex-col justify-center gap-3">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-teal-950/30 border border-teal-500/20 text-teal-400 shrink-0">
+                  <Award className="w-8 h-8" />
+                </div>
+                <div>
+                  <div className="text-xs font-mono text-teal-400 font-semibold">{CERTIFICATION_INFO.provider} Verification</div>
+                  <div className="font-display text-sm font-bold text-white mt-0.5">{CERTIFICATION_INFO.title}</div>
+                  <div className="text-xs text-slate-400 mt-1 font-sans">{CERTIFICATION_INFO.status} · Globally Recognized</div>
+                </div>
               </div>
-              <div>
-                <div className="text-xs font-mono text-teal-400 font-semibold">{CERTIFICATION_INFO.provider} Verification</div>
-                <div className="font-display text-sm font-bold text-white mt-0.5">{CERTIFICATION_INFO.title}</div>
-                <div className="text-xs text-slate-400 mt-1 font-sans">{CERTIFICATION_INFO.status} · Globally Recognized</div>
-              </div>
+              <p className="text-[11px] text-slate-400 font-sans leading-relaxed">
+                Pearson practical assessment available separately. Applicable Pearson assessment fees are charged separately.
+              </p>
             </div>
 
           </div>
@@ -1184,6 +1474,273 @@ export default function App() {
                             Talk to a BCAD Advisor
                           </a>
                         </div>
+
+                        {/* DEFENDER READINESS SNAPSHOT SECTION */}
+                        <div className="mt-8 pt-8 border-t border-teal-500/20 space-y-6">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                              <div className="text-[10px] font-mono text-teal-400 uppercase tracking-widest font-bold flex items-center gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5" />
+                                CHALLENGE COMPLETION REPORT
+                              </div>
+                              <h3 className="font-display text-lg md:text-xl font-bold text-white tracking-tight">
+                                Defender Readiness Snapshot
+                              </h3>
+                            </div>
+                            <div className="text-xs font-mono text-slate-400 bg-slate-900/90 px-2.5 py-1 rounded border border-slate-800 self-start sm:self-auto">
+                              Ref: <span className="text-teal-300 font-semibold">{snapshotRefId}</span>
+                            </div>
+                          </div>
+
+                          {!snapshotSubmitted ? (
+                            /* LEAD CAPTURE FORM */
+                            <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl p-5 md:p-6 space-y-5">
+                              <div className="space-y-1">
+                                <div className="text-xs font-bold text-slate-200 font-sans">
+                                  Unlock Your 6-Stage Defender Readiness Snapshot
+                                </div>
+                                <p className="text-[11px] text-slate-400 leading-relaxed font-sans font-normal">
+                                  Enter your contact details to review your challenge performance summary, demonstrated capabilities, and download your private result snapshot.
+                                </p>
+                              </div>
+
+                              <form onSubmit={handleSnapshotSubmit} className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                  <div>
+                                    <label className="block text-[11px] font-sans font-semibold text-slate-300 mb-1">
+                                      Full Name *
+                                    </label>
+                                    <input
+                                      type="text"
+                                      required
+                                      placeholder="e.g. Alex Mercer"
+                                      value={snapshotName}
+                                      onChange={(e) => setSnapshotName(e.target.value)}
+                                      className="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 font-sans"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[11px] font-sans font-semibold text-slate-300 mb-1">
+                                      Email *
+                                    </label>
+                                    <input
+                                      type="email"
+                                      required
+                                      placeholder="e.g. alex@company.com"
+                                      value={snapshotEmail}
+                                      onChange={(e) => setSnapshotEmail(e.target.value)}
+                                      className="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 font-sans"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[11px] font-sans font-semibold text-slate-300 mb-1">
+                                      WhatsApp / Phone *
+                                    </label>
+                                    <input
+                                      type="tel"
+                                      required
+                                      placeholder="e.g. +91 98765 43210"
+                                      value={snapshotPhone}
+                                      onChange={(e) => setSnapshotPhone(e.target.value)}
+                                      className="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-400 font-sans"
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Consent checkbox */}
+                                <label className="flex items-start gap-2.5 cursor-pointer pt-1">
+                                  <input
+                                    type="checkbox"
+                                    required
+                                    checked={snapshotConsent}
+                                    onChange={(e) => setSnapshotConsent(e.target.checked)}
+                                    className="mt-0.5 rounded border-slate-700 bg-slate-900 text-teal-500 focus:ring-teal-500/20 shrink-0"
+                                  />
+                                  <span className="text-[11px] text-slate-300 font-sans leading-relaxed">
+                                    I agree to be contacted by BlackPerl DFIR regarding BCAD admissions and this assessment result. *
+                                  </span>
+                                </label>
+
+                                {snapshotError && (
+                                  <div className="text-xs text-red-400 font-sans flex items-center gap-1.5 font-medium">
+                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                    {snapshotError}
+                                  </div>
+                                )}
+
+                                <button
+                                  type="submit"
+                                  disabled={snapshotLoading}
+                                  className="w-full sm:w-auto px-6 py-2.5 bg-teal-400 hover:bg-teal-300 text-slate-950 font-bold font-sans text-xs rounded-lg transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                                >
+                                  {snapshotLoading ? (
+                                    <>
+                                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                      Generating Snapshot...
+                                    </>
+                                  ) : (
+                                    <>
+                                      Reveal Defender Readiness Snapshot →
+                                    </>
+                                  )}
+                                </button>
+                              </form>
+                            </div>
+                          ) : (
+                            /* REVEALED SNAPSHOT CONTENT */
+                            <div className="space-y-6 animate-fadeIn">
+                              {/* 6 STAGES BREAKDOWN */}
+                              <div className="bg-slate-950/90 border border-slate-800 rounded-xl p-5 space-y-4">
+                                <div className="text-xs font-mono text-teal-400 font-bold uppercase tracking-wider flex items-center gap-2">
+                                  <CheckCircle2 className="w-4 h-4 text-teal-400" />
+                                  Completed Challenge Stages (6/6)
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-sans">
+                                  <div className="p-3 bg-slate-900/70 border border-slate-800/80 rounded-lg space-y-1">
+                                    <div className="font-semibold text-white flex items-center gap-1.5">
+                                      <span className="text-teal-400 font-mono text-[11px]">01</span>
+                                      Signal Triaging (T1053.005)
+                                    </div>
+                                    <p className="text-[11px] text-slate-400 font-normal">
+                                      Detected scheduled task anomaly on <span className="text-slate-200">DC01.BLACKPERL.INTERNAL</span>.
+                                    </p>
+                                  </div>
+
+                                  <div className="p-3 bg-slate-900/70 border border-slate-800/80 rounded-lg space-y-1">
+                                    <div className="font-semibold text-white flex items-center gap-1.5">
+                                      <span className="text-teal-400 font-mono text-[11px]">02</span>
+                                      Alert Investigation (Event 4688)
+                                    </div>
+                                    <p className="text-[11px] text-slate-400 font-normal">
+                                      Inspected CommandLine arguments for encoded PowerShell strings and C2 endpoints.
+                                    </p>
+                                  </div>
+
+                                  <div className="p-3 bg-slate-900/70 border border-slate-800/80 rounded-lg space-y-1">
+                                    <div className="font-semibold text-white flex items-center gap-1.5">
+                                      <span className="text-teal-400 font-mono text-[11px]">03</span>
+                                      Process Lineage (T1059)
+                                    </div>
+                                    <p className="text-[11px] text-slate-400 font-normal">
+                                      Traced process execution ancestry (<span className="text-slate-200 font-mono text-[10px]">explorer → cmd → schtasks</span>).
+                                    </p>
+                                  </div>
+
+                                  <div className="p-3 bg-slate-900/70 border border-slate-800/80 rounded-lg space-y-1">
+                                    <div className="font-semibold text-white flex items-center gap-1.5">
+                                      <span className="text-teal-400 font-mono text-[11px]">04</span>
+                                      Threat Hunting (KQL Query)
+                                    </div>
+                                    <p className="text-[11px] text-slate-400 font-normal">
+                                      Executed network telemetry query discovering <span className="text-slate-200">WS-DEV-04</span> & <span className="text-slate-200">WS-HR-09</span>.
+                                    </p>
+                                  </div>
+
+                                  <div className="p-3 bg-slate-900/70 border border-slate-800/80 rounded-lg space-y-1">
+                                    <div className="font-semibold text-white flex items-center gap-1.5">
+                                      <span className="text-teal-400 font-mono text-[11px]">05</span>
+                                      Detection Engineering (Sigma)
+                                    </div>
+                                    <p className="text-[11px] text-slate-400 font-normal">
+                                      Codified reusable detection rule for <span className="text-teal-300 font-mono text-[10px]">{sigmaImage}</span> + <span className="text-teal-300 font-mono text-[10px]">{sigmaCommand}</span>.
+                                    </p>
+                                  </div>
+
+                                  <div className="p-3 bg-slate-900/70 border border-slate-800/80 rounded-lg space-y-1">
+                                    <div className="font-semibold text-white flex items-center gap-1.5">
+                                      <span className="text-teal-400 font-mono text-[11px]">06</span>
+                                      Incident Containment & Response
+                                    </div>
+                                    <p className="text-[11px] text-slate-400 font-normal">
+                                      Isolated compromised workstations and revoked Active Directory credentials.
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* DEMONSTRATED CAPABILITIES & PERFORMANCE INTERPRETATION */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="p-4 bg-slate-950/90 border border-slate-800 rounded-xl space-y-2.5">
+                                  <div className="text-[10px] font-mono text-teal-400 font-bold uppercase tracking-wider">
+                                    DEMONSTRATED CAPABILITIES
+                                  </div>
+                                  <ul className="text-[11px] text-slate-300 font-sans space-y-1.5 list-disc pl-4 leading-relaxed font-normal">
+                                    <li>Threat Signal Triaging & MITRE ATT&CK Mapping</li>
+                                    <li>Security Audit Log & CommandLine Forensics</li>
+                                    <li>Process Execution Hierarchy & Ancestry Analysis</li>
+                                    <li>Enterprise Network Telemetry Threat Hunting (KQL)</li>
+                                    <li>SIEM-Agnostic Sigma Detection Authoring</li>
+                                    <li>Active Host Containment & Incident Neutralization</li>
+                                  </ul>
+                                </div>
+
+                                <div className="p-4 bg-slate-950/90 border border-slate-800 rounded-xl space-y-2.5">
+                                  <div className="text-[10px] font-mono text-teal-400 font-bold uppercase tracking-wider">
+                                    PERFORMANCE INTERPRETATION
+                                  </div>
+                                  <p className="text-[11px] text-slate-300 font-sans leading-relaxed font-normal">
+                                    You systematically navigated the full incident lifecycle—from initial anomaly recognition through log analysis, process lineage tracing, telemetry hunting, custom detection authoring, and endpoint containment. This confirms practical familiarity with core defensive cyber operations workflows.
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* DISCLAIMER */}
+                              <div className="p-3.5 bg-slate-900/70 border border-slate-800 rounded-xl text-[11px] text-slate-400 font-sans leading-relaxed">
+                                <span className="text-slate-300 font-semibold">Assessment Notice:</span> This is an indicative learning snapshot from the BCAD interactive simulation, not a certification, accredited qualification, or formal assessment.
+                              </div>
+
+                              {/* SHARING & DOWNLOAD ACTIONS */}
+                              <div className="flex flex-wrap items-center gap-3 pt-1">
+                                <button
+                                  onClick={handleShareSnapshot}
+                                  className="px-4 py-2 bg-slate-900 border border-teal-500/40 hover:border-teal-400 text-teal-300 text-xs font-sans font-semibold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer"
+                                >
+                                  <Share2 className="w-3.5 h-3.5" />
+                                  {snapshotCopied ? 'Result Copied to Clipboard!' : 'Share Result'}
+                                </button>
+
+                                <button
+                                  onClick={handleDownloadSnapshot}
+                                  className="px-4 py-2 bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-200 text-xs font-sans font-semibold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer"
+                                >
+                                  <Download className="w-3.5 h-3.5" />
+                                  {snapshotDownloaded ? 'Snapshot Downloaded!' : 'Download Result'}
+                                </button>
+
+                                <button
+                                  onClick={handleEmailSnapshot}
+                                  className="px-4 py-2 bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-200 text-xs font-sans font-semibold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer"
+                                >
+                                  <Mail className="w-3.5 h-3.5 text-teal-400" />
+                                  Share via Email
+                                </button>
+                              </div>
+
+                              {/* FINAL CTA */}
+                              <div className="pt-4 border-t border-slate-800/80 space-y-3">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                  <div>
+                                    <div className="text-sm font-display font-bold text-white">
+                                      Build These Capabilities Further with BCAD
+                                    </div>
+                                    <p className="text-xs text-slate-400 font-sans font-normal">
+                                      100% live technical instructor-led training, 24/7 dedicated cyber range labs, and 1-on-1 mentorship.
+                                    </p>
+                                  </div>
+
+                                  <a
+                                    href="#booking"
+                                    className="px-5 py-2.5 bg-teal-400 hover:bg-teal-300 text-slate-950 font-bold font-sans text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 shrink-0"
+                                  >
+                                    Talk to a BCAD Advisor
+                                    <ArrowRight className="w-4 h-4" />
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
 
@@ -1689,105 +2246,44 @@ export default function App() {
         </div>
       </section>
 
-      {/* SECTION 7: WHO BCAD IS FOR */}
-      <section className="py-28 bg-gradient-to-b from-[#EEF7F8] to-[#F4F9FA] text-slate-800 border-b border-slate-200/50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
-            <span className="text-xs font-mono text-teal-700 uppercase tracking-widest font-bold">WHO BCAD IS FOR</span>
+      {/* SECTION 7: WHO IS BCAD FOR */}
+      <section className="py-24 bg-gradient-to-b from-[#EEF7F8] to-[#F4F9FA] text-slate-800 border-b border-slate-200/50">
+        <div className="max-w-7xl mx-auto px-6 space-y-12">
+          <div className="max-w-3xl space-y-4">
+            <span className="text-xs font-mono text-teal-700 uppercase tracking-widest font-bold">ELIGIBILITY</span>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-[#020617] tracking-tight">
-              Built for Professionals Who Want to Go Deeper
+              Who Should Consider BCAD
             </h2>
             <p className="font-sans text-slate-655 text-base md:text-[17px] leading-relaxed font-normal">
-              Whether you seek to break out of basic ticket-level SOC triage or transition completely into threat hunting operations, the program adjusts to match your goals.
+              BCAD is designed for individuals committed to developing rigorous, practical capability in defensive cybersecurity operations.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            
-            <div className="bg-white/95 p-5 rounded-2xl border border-slate-200/80 hover:border-teal-400/50 hover:bg-white transition-all duration-300 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md">
-              <div className="space-y-2">
-                <span className="p-2 rounded-lg bg-teal-50 text-teal-700 border border-teal-200/40 inline-block">
-                  <Terminal className="w-5 h-5" />
-                </span>
-                <h3 className="font-display font-bold text-[#020617] text-base">Already Working in a SOC?</h3>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans font-normal">
-                  Build capability beyond basic alert monitoring and passive forwarding. Develop the depth to lead high-stakes investigations.
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-6 bg-white/95 border border-slate-200/80 rounded-2xl space-y-3 shadow-sm">
+              <div className="font-display text-base font-bold text-[#020617] flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-teal-600" />
+                Ideal Candidate Backgrounds:
               </div>
-              <button 
-                onClick={() => {
-                  setBookingProfile('Already Working in a SOC?');
-                  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="text-xs font-sans font-semibold text-teal-700 hover:text-teal-900 text-left pt-2 flex items-center gap-1 group"
-              >
-                Select Profile <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </button>
+              <ul className="text-xs md:text-sm text-slate-700 space-y-2.5 list-disc pl-5 font-sans leading-relaxed">
+                <li>SOC Analysts (Tier 1/2) looking to transition to tier-3 investigation or detection engineering</li>
+                <li>System & Network Administrators moving into enterprise cyber defense</li>
+                <li>Junior Security Professionals seeking structured, hands-on operational depth</li>
+                <li>Information Security graduates with basic networking foundation ready for real environments</li>
+              </ul>
             </div>
-
-            <div className="bg-white/95 p-5 rounded-2xl border border-slate-200/80 hover:border-teal-400/50 hover:bg-white transition-all duration-300 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md">
-              <div className="space-y-2">
-                <span className="p-2 rounded-lg bg-teal-50 text-teal-700 border border-teal-200/40 inline-block">
-                  <Network className="w-5 h-5" />
-                </span>
-                <h3 className="font-display font-bold text-[#020617] text-base">Working in IT / Systems?</h3>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans font-normal">
-                  Develop deeper defensive-security skills. Leverage your existing knowledge of systems and directories into direct threat defense operations.
-                </p>
+            <div className="p-6 bg-white/95 border border-slate-200/80 rounded-2xl space-y-3 shadow-sm">
+              <div className="font-display text-base font-bold text-[#020617] flex items-center gap-2">
+                <Award className="w-5 h-5 text-teal-600" />
+                Recommended Prerequisites:
               </div>
-              <button 
-                onClick={() => {
-                  setBookingProfile('Working in IT / Systems / Networks?');
-                  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="text-xs font-sans font-semibold text-teal-700 hover:text-teal-900 text-left pt-2 flex items-center gap-1 group"
-              >
-                Select Profile <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </button>
+              <ul className="text-xs md:text-sm text-slate-700 space-y-2.5 list-disc pl-5 font-sans leading-relaxed">
+                <li>Fundamental comprehension of TCP/IP networking, routing, and DNS</li>
+                <li>Familiarity with basic Windows and Linux command-line utilities</li>
+                <li>Basic understanding of security concepts (authentication, firewalls, ports)</li>
+                <li>No prior reverse-engineering or coding experience required</li>
+              </ul>
             </div>
-
-            <div className="bg-white/95 p-5 rounded-2xl border border-slate-200/80 hover:border-teal-400/50 hover:bg-white transition-all duration-300 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md">
-              <div className="space-y-2">
-                <span className="p-2 rounded-lg bg-teal-50 text-teal-700 border border-teal-200/40 inline-block">
-                  <Users className="w-5 h-5" />
-                </span>
-                <h3 className="font-display font-bold text-[#020617] text-base">Junior Security Expert?</h3>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans font-normal">
-                  Expand into proactive threat hunting, custom detection engineering, memory analysis, and structural enterprise response patterns.
-                </p>
-              </div>
-              <button 
-                onClick={() => {
-                  setBookingProfile('Junior Security Professional?');
-                  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="text-xs font-sans font-semibold text-teal-700 hover:text-teal-900 text-left pt-2 flex items-center gap-1 group"
-              >
-                Select Profile <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            </div>
-
-            <div className="bg-white/95 p-5 rounded-2xl border border-slate-200/80 hover:border-teal-400/50 hover:bg-white transition-all duration-300 space-y-4 flex flex-col justify-between shadow-sm hover:shadow-md">
-              <div className="space-y-2">
-                <span className="p-2 rounded-lg bg-teal-50 text-teal-700 border border-teal-200/40 inline-block">
-                  <Award className="w-5 h-5" />
-                </span>
-                <h3 className="font-display font-bold text-[#020617] text-base">New to Cybersecurity?</h3>
-                <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-sans font-normal">
-                  Speak with a professional advisor to evaluate your networking foundation and determine if the BCAD modules are right for you.
-                </p>
-              </div>
-              <button 
-                onClick={() => {
-                  setBookingProfile('New to Cybersecurity?');
-                  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="text-xs font-sans font-semibold text-teal-700 hover:text-teal-900 text-left pt-2 flex items-center gap-1 group"
-              >
-                Select Profile <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            </div>
-
           </div>
         </div>
       </section>
@@ -1857,6 +2353,124 @@ export default function App() {
         </div>
       </section>
 
+      {/* SECTION: CORPORATE TRAINING PROPOSITION */}
+      <section className="py-20 bg-slate-950 border-t border-slate-900/80 relative text-slate-100">
+        <div className="max-w-7xl mx-auto px-6" ref={corpRef}>
+          <div className="max-w-3xl space-y-4">
+            <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-snug">
+              Cybersecurity Training Customized for Your Organization
+            </h2>
+            <p className="font-sans text-slate-300 text-sm md:text-base leading-relaxed">
+              Build the right cyber capability for your team — tailored to your security environment, capability gaps and workforce objectives.
+            </p>
+
+            {/* Three Compact Proof Points */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1 text-xs font-mono text-slate-300">
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0" />
+                Security-need aligned
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0" />
+                Capability-gap focused
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0" />
+                Built for your workforce
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-slate-900/80">
+            <div className="text-[11px] font-mono tracking-widest text-slate-400 uppercase font-semibold mb-6">
+              Corporate Teams Trained by BlackPerl
+            </div>
+
+            {/* 10 Organizations - Clean 5 x 2 Responsive Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-y-8 gap-x-8 items-center">
+              {CORPORATE_ORGANIZATIONS.map((org, idx) => (
+                <div 
+                  key={org.name}
+                  style={{ transitionDelay: `${idx * 50}ms` }}
+                  className={`transition-all duration-700 ease-out flex items-center h-10 ${
+                    corpVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                  }`}
+                >
+                  {org.logo ? (
+                    <img 
+                      src={org.logo} 
+                      alt={org.name}
+                      title={org.name}
+                      className={`w-auto object-contain max-w-[140px] shrink-0 ${org.heightClass || 'h-6 md:h-7'}`}
+                    />
+                  ) : (
+                    <span className="font-display text-sm md:text-[15px] font-semibold text-slate-300 hover:text-white transition-colors duration-150">
+                      {org.name}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* CTA leading to existing Admissions / Booking destination */}
+            <div className="mt-10 pt-2 flex items-center">
+              <a
+                href="#booking"
+                onClick={() => setBookingProfile('Corporate Batch (Team Training)')}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-400 text-slate-950 font-sans font-semibold text-xs md:text-sm rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer"
+              >
+                <span>Discuss Corporate Training →</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION: FREQUENTLY ASKED QUESTIONS */}
+      <section className="py-24 bg-gradient-to-b from-[#F8FBFC] via-[#EEF7F8] to-[#F4F9FA] text-slate-800 border-t border-slate-200/60">
+        <div className="max-w-4xl mx-auto px-6 space-y-12">
+          <div className="text-center space-y-4">
+            <span className="text-xs font-mono text-teal-700 uppercase tracking-widest font-bold">CLARITY</span>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-[#020617] tracking-tight">
+              Frequently Asked Questions
+            </h2>
+            <p className="font-sans text-slate-655 text-base leading-relaxed font-normal">
+              Clear answers to prospective learner inquiries regarding training delivery, lab access, and certification.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+              <h3 className="font-display text-base font-bold text-[#020617]">What is the difference between BCAD and entry-level courses?</h3>
+              <p className="font-sans text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
+                Entry-level courses typically focus on theoretical concepts and multiple-choice quizzes. BCAD is 100% practitioner-focused, placing you directly inside live enterprise SIEMs, memory debuggers, and attack scenarios where you analyze real raw telemetry.
+              </p>
+            </div>
+
+            <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+              <h3 className="font-display text-base font-bold text-[#020617]">How long do I retain lab access?</h3>
+              <p className="font-sans text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
+                Participants receive generous lab environment access throughout the training duration and an additional extended window for exam preparation.
+              </p>
+            </div>
+
+            <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+              <h3 className="font-display text-base font-bold text-[#020617]">Can I attend while working full-time?</h3>
+              <p className="font-sans text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
+                Yes. Cohorts are scheduled on weekends and evenings to accommodate working cybersecurity, IT, and systems professionals.
+              </p>
+            </div>
+
+            <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+              <h3 className="font-display text-base font-bold text-[#020617]">How is the certification exam administered?</h3>
+              <p className="font-sans text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
+                The 24-hour practical assessment is hosted in a secure cloud environment. You investigate an intrusion, write detection rules, and submit an evidence-backed incident report evaluated by BlackPerl senior examiners.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* SECTION 9: ADVISOR BOOKING CALENDAR SYSTEM */}
       <section id="booking" className="py-24 max-w-7xl mx-auto px-6 scroll-mt-24">
         <div className="relative rounded-3xl overflow-hidden border border-slate-200/80 bg-[#F4F9FA] shadow-xl text-slate-800">
@@ -1896,7 +2510,11 @@ export default function App() {
               {/* Admissions & Marketing Office Direct Contact */}
               <div className="pt-6 border-t border-slate-200/80 space-y-3">
                 <div className="flex items-center gap-2.5">
-                  <img src="/logo.svg" alt="BlackPerl" className="w-6 h-6 object-contain shrink-0" />
+                  <img 
+                    src="/logo.svg" 
+                    alt="BlackPerl DFIR" 
+                    className="h-6 w-auto object-contain shrink-0" 
+                  />
                   <div>
                     <div className="text-xs font-bold text-[#020617] uppercase tracking-wider font-sans">
                       Admissions & Marketing Office
@@ -2129,7 +2747,11 @@ export default function App() {
           {/* Logo & Description */}
           <div className="md:col-span-4 space-y-4">
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
-              <img src="/logo.svg" alt="BlackPerl" className="w-10 h-10 object-contain shrink-0" />
+              <img 
+                src="/logo.svg" 
+                alt="BlackPerl DFIR" 
+                className="h-10 w-auto object-contain shrink-0" 
+              />
               <div className="flex flex-col">
                 <span className="font-display text-lg font-bold text-white tracking-tight group-hover:text-teal-300 transition-colors">
                   BlackPerl DFIR
@@ -2166,7 +2788,6 @@ export default function App() {
               <li><button onClick={() => navigate('/')} className="hover:text-teal-400 transition-colors text-left cursor-pointer">About BlackPerl DFIR</button></li>
               <li><button onClick={() => navigate('/program')} className="hover:text-teal-400 transition-colors text-left cursor-pointer">Instructor Team & Syllabus</button></li>
               <li><button onClick={() => navigate('/contact')} className="hover:text-teal-400 transition-colors text-left cursor-pointer">Talk to a Training Advisor</button></li>
-              <li><span className="text-slate-600 cursor-not-allowed">Partner Portal</span></li>
             </ul>
           </div>
 
@@ -2174,14 +2795,39 @@ export default function App() {
           <div className="md:col-span-3 space-y-3.5">
             <div className="text-xs font-sans text-white font-semibold tracking-wider uppercase">Legal & Advisory</div>
             <ul className="space-y-2 text-[11px] font-sans">
-              <li><button onClick={() => navigate('/privacy-policy')} className="text-slate-400 hover:text-teal-400 transition-colors cursor-pointer text-left">Privacy & Telemetry Policy</button></li>
-              <li><button onClick={() => navigate('/terms-and-conditions')} className="text-slate-400 hover:text-teal-400 transition-colors cursor-pointer text-left">Terms & Conditions of Labs</button></li>
-              <li><button onClick={() => navigate('/contact')} className="text-slate-400 hover:text-teal-400 transition-colors cursor-pointer text-left">Refund & Support Inquiry</button></li>
+              <li><button onClick={() => navigate('/privacy-policy')} className="text-slate-400 hover:text-teal-400 transition-colors cursor-pointer text-left">Privacy Policy</button></li>
+              <li><button onClick={() => navigate('/terms-and-conditions')} className="text-slate-400 hover:text-teal-400 transition-colors cursor-pointer text-left">Terms & Conditions</button></li>
+              <li><button onClick={() => navigate('/contact')} className="text-slate-400 hover:text-teal-400 transition-colors cursor-pointer text-left">Admissions & Support Inquiry</button></li>
             </ul>
-            <div className="pt-3 border-t border-slate-900 space-y-1 text-slate-400 font-sans">
-              <div className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-teal-400 shrink-0" /> +91-9000-BPDFIR</div>
-              <div className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-teal-400 shrink-0" /> bcad@blackperldfir.com</div>
-              <div className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-teal-400 shrink-0" /> Hyderabad, Telangana, India</div>
+            <div className="pt-3 border-t border-slate-900 space-y-2 text-slate-400 font-sans">
+              <div className="text-[11px] font-mono uppercase tracking-wider text-slate-300 font-semibold">
+                Admissions & Marketing Office
+              </div>
+              <div className="space-y-1.5 text-xs">
+                <div className="flex items-center gap-2">
+                  <Phone className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                  <a href="tel:+919972641801" className="text-slate-300 hover:text-teal-300 transition-colors font-mono">
+                    +91 99726 41801
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                  <a 
+                    href="https://wa.me/919972641801" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-slate-300 hover:text-teal-300 transition-colors"
+                  >
+                    WhatsApp Direct Chat
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                  <a href="mailto:Jhambhlucky@gmail.com" className="text-slate-300 hover:text-teal-300 transition-colors font-mono">
+                    Jhambhlucky@gmail.com
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
