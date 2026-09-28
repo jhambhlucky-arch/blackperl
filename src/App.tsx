@@ -39,7 +39,8 @@ import {
   FileText,
   LogIn,
   LogOut,
-  Cloud
+  Cloud,
+  MessageSquare
 } from 'lucide-react';
 
 import {
@@ -328,13 +329,16 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           
           {/* ZONE 1: BRAND ZONE */}
-          <div className="flex flex-col cursor-pointer" onClick={() => navigate('/')}>
-            <span className="font-display text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-teal-100 to-teal-400 bg-clip-text text-transparent">
-              BlackPerl DFIR
-            </span>
-            <span className="text-[9px] font-mono tracking-widest text-teal-400 uppercase leading-none mt-1">
-              Cyber Security · Forensics · Resilience
-            </span>
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
+            <img src="/logo.svg" alt="BlackPerl" className="w-10 h-10 object-contain shrink-0" />
+            <div className="flex flex-col">
+              <span className="font-display text-xl font-extrabold tracking-tight text-white group-hover:text-teal-300 transition-colors">
+                BlackPerl DFIR
+              </span>
+              <span className="text-[10px] font-sans tracking-wide text-[#F4F6FB] font-medium leading-tight mt-0.5">
+                The Cyberdefenders Online
+              </span>
+            </div>
           </div>
 
           {/* ZONE 2: NAVIGATION LINKS */}
@@ -1889,13 +1893,53 @@ export default function App() {
                 </p>
               </div>
  
-              {/* Text visual block representing capability bridge */}
-              <div className="pt-4 border-t border-slate-200/80">
-                <div className="text-xs font-mono text-teal-700 font-bold uppercase tracking-widest">
-                  FROM CURIOSITY TO DEFENSIVE CAPABILITY.
+              {/* Admissions & Marketing Office Direct Contact */}
+              <div className="pt-6 border-t border-slate-200/80 space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <img src="/logo.svg" alt="BlackPerl" className="w-6 h-6 object-contain shrink-0" />
+                  <div>
+                    <div className="text-xs font-bold text-[#020617] uppercase tracking-wider font-sans">
+                      Admissions & Marketing Office
+                    </div>
+                    <div className="text-[11px] text-slate-600 font-sans">
+                      For Corporate Batch or Individual Admissions
+                    </div>
+                  </div>
                 </div>
-                <div className="text-[11px] text-slate-500 font-mono mt-1 font-semibold">
-                  BlackPerl DFIR - Built for a Safer Digital World.
+
+                <div className="text-xs text-slate-700 font-sans space-y-1">
+                  <div><span className="font-semibold text-slate-900">Contact:</span> <span className="font-mono font-semibold">+91 99726 41801</span></div>
+                  <div><span className="font-semibold text-slate-900">Email:</span> <span className="font-mono font-semibold">Jhambhlucky@gmail.com</span></div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <a
+                    href="https://wa.me/9972641801"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-sans font-semibold rounded-lg transition-all cursor-pointer"
+                  >
+                    <Phone className="w-3 h-3 text-teal-400" />
+                    <span>Call Admissions</span>
+                  </a>
+
+                  <a
+                    href="https://wa.me/9972641801"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 hover:bg-teal-400 text-slate-950 text-[11px] font-sans font-semibold rounded-lg transition-all cursor-pointer"
+                  >
+                    <MessageSquare className="w-3 h-3" />
+                    <span>WhatsApp Admissions</span>
+                  </a>
+
+                  <a
+                    href="mailto:Jhambhlucky@gmail.com"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-[11px] font-sans font-semibold rounded-lg transition-all cursor-pointer"
+                  >
+                    <Mail className="w-3 h-3 text-teal-700" />
+                    <span>Email Admissions</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -2086,11 +2130,16 @@ export default function App() {
           
           {/* Logo & Description */}
           <div className="md:col-span-4 space-y-4">
-            <div className="flex flex-col cursor-pointer" onClick={() => navigate('/')}>
-              <span className="font-display text-lg font-bold text-white tracking-tight">BlackPerl DFIR</span>
-              <span className="text-[9px] font-mono tracking-widest text-teal-400 uppercase leading-none mt-1">
-                CYBER SECURITY · FORENSICS · RESILIENCE
-              </span>
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
+              <img src="/logo.svg" alt="BlackPerl" className="w-10 h-10 object-contain shrink-0" />
+              <div className="flex flex-col">
+                <span className="font-display text-lg font-bold text-white tracking-tight group-hover:text-teal-300 transition-colors">
+                  BlackPerl DFIR
+                </span>
+                <span className="text-[10px] font-sans tracking-wide text-[#F4F6FB] font-medium leading-tight mt-0.5">
+                  The Cyberdefenders Online
+                </span>
+              </div>
             </div>
             <p className="text-slate-400 leading-relaxed max-w-sm font-sans font-normal text-xs">
               BlackPerl DFIR is a premier technical training provider delivering intense, hands-on, globally recognized defensive security programs.

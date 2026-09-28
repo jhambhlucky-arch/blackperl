@@ -295,42 +295,72 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
               </div>
             )}
 
-            {/* LOCKED H2: Prefer to Speak Directly? */}
-            <div className="border-t border-slate-200/80 pt-10 space-y-4">
-              <span className="text-xs font-mono text-teal-700 uppercase tracking-widest font-bold">DIRECT CHANNELS</span>
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-[#020617] tracking-tight">
-                Prefer to Speak Directly?
-              </h2>
+            {/* ADMISSIONS & MARKETING OFFICE */}
+            <div className="border-t border-slate-200/80 pt-10 space-y-6">
+              <div className="flex items-center gap-3">
+                <img src="/logo.svg" alt="BlackPerl" className="w-8 h-8 object-contain shrink-0" />
+                <div>
+                  <span className="text-xs font-mono text-teal-700 uppercase tracking-widest font-bold block">DIRECT CONTACT</span>
+                  <h2 className="font-display text-2xl md:text-3xl font-bold text-[#020617] tracking-tight">
+                    Admissions & Marketing Office
+                  </h2>
+                </div>
+              </div>
               <p className="font-sans text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
-                Reach our Hyderabad instructional facility via telephone, WhatsApp, or official institutional email.
+                For Corporate Batch or Individual Admissions
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3">
-                  <Phone className="w-4 h-4 text-teal-700 shrink-0 mt-0.5" />
-                  <div>
-                    <div className="text-xs font-bold text-[#020617]">Telephone Support</div>
-                    <div className="text-xs font-mono text-slate-600 mt-0.5">+91-9000-BPDFIR</div>
-                    <div className="text-[10px] text-slate-500 font-sans">Mon-Sat, 9am - 7pm IST</div>
+              {/* Admissions Details Card */}
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <Phone className="w-5 h-5 text-teal-700 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-xs font-bold text-[#020617] uppercase tracking-wider">Admission Inquiry / Call / WhatsApp</div>
+                      <div className="text-sm font-mono text-slate-900 font-semibold mt-0.5">+91 99726 41801</div>
+                      <div className="text-[11px] text-slate-500 font-sans mt-0.5">Corporate Batch or Individual Admissions</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-5 h-5 text-teal-700 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-xs font-bold text-[#020617] uppercase tracking-wider">Admissions Officer Email</div>
+                      <div className="text-sm font-mono text-slate-900 font-semibold mt-0.5">Jhambhlucky@gmail.com</div>
+                      <div className="text-[11px] text-slate-500 font-sans mt-0.5">Direct Admissions Response</div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3">
-                  <Mail className="w-4 h-4 text-teal-700 shrink-0 mt-0.5" />
-                  <div>
-                    <div className="text-xs font-bold text-[#020617]">Admissions Email</div>
-                    <div className="text-xs font-mono text-slate-600 mt-0.5">bcad@blackperldfir.com</div>
-                    <div className="text-[10px] text-slate-500 font-sans">24h response SLA</div>
-                  </div>
-                </div>
+                {/* Direct Action Buttons */}
+                <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-200">
+                  <a
+                    href="https://wa.me/9972641801"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-sans font-semibold rounded-xl transition-all shadow-sm cursor-pointer"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-teal-400" />
+                    <span>Call Admissions</span>
+                  </a>
 
-                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-teal-700 shrink-0 mt-0.5" />
-                  <div>
-                    <div className="text-xs font-bold text-[#020617]">Operational Headquarters</div>
-                    <div className="text-xs text-slate-600 mt-0.5 font-sans">Hyderabad, Telangana</div>
-                    <div className="text-[10px] text-slate-500 font-sans">India Cyber Defense Hub</div>
-                  </div>
+                  <a
+                    href="https://wa.me/9972641801"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-sans font-semibold rounded-xl transition-all shadow-sm cursor-pointer"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>WhatsApp Admissions</span>
+                  </a>
+
+                  <a
+                    href="mailto:Jhambhlucky@gmail.com"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs font-sans font-semibold rounded-xl transition-all shadow-sm cursor-pointer"
+                  >
+                    <Mail className="w-3.5 h-3.5 text-teal-700" />
+                    <span>Email Admissions</span>
+                  </a>
                 </div>
               </div>
             </div>
